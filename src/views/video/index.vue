@@ -1,6 +1,8 @@
 <template>
   <div class="video">
-  video
+  <van-skeleton title avatar :row="3" />
+  <van-skeleton title avatar :row="3" />
+  <van-skeleton title avatar :row="3" />
   </div>
 </template>
 
@@ -15,5 +17,7 @@ export default {
 </script>
 
 <style scoped lang = "less">
-
+.van-skeleton {
+  margin-top: 30px;
+}
 </style>
