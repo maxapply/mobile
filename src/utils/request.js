@@ -6,7 +6,7 @@ import store from '../store/index.js'
 import router from '../router/index.js'
 
 const instance = axios.create({
-  baseURL: ' http://ttapi.research.itcast.cn/',
+  baseURL: ' http://ttapi.research.itcast.cn',
   transformResponse: [function (data) {
     try {
       return jsonBigint.parse(data)

@@ -6,6 +6,7 @@ import Vant from 'vant'
 import 'vant/lib/index.css'
 import 'amfe-flexible/index.min.js'
 import './assets/css/global.less'
+import './utils/validate.js'
 
 Vue.use(Vant)
 
