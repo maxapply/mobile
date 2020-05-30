@@ -1,11 +1,9 @@
 <template>
-  <div class="layout">
-    <van-nav-bar fixed title="黑马头条" right-text="搜索"
-    @click-right="$router.push('/search')" />
-
-  <div class="my-wrapper" >
-      <router-view></router-view>
-    </div>
+  <div class="container">
+     <van-nav-bar fixed title="黑马头条" right-text="搜索" @click-right="$router.push('/search')" />
+      <div class="my-wrapper" >
+          <router-view></router-view>
+        </div>
 
     <van-tabbar route>
       <van-tabbar-item to="/home" icon="home-o">首页</van-tabbar-item>
@@ -27,7 +25,7 @@ export default {
 </script>
 
 <style scoped lang = "less">
-.layout{
+.container {
   width: 100%;
   height: 100%;
   position: relative;

@@ -1,3 +1,4 @@
+// -----------------------全局样式-----------------------
 *{
   margin: 0;
   padding: 0;
@@ -5,7 +6,6 @@
 ul{
   list-style: none;
 }
-
 #app{
   position: absolute;
   left: 0;
@@ -16,12 +16,13 @@ ul{
   font-size: 14px;
 }
 
+// -----------------------覆盖vant-导航栏组件默认样式的-----------------------
 .van-nav-bar {
   background-color: #1989FA;
-  .van-nav-bar__title{
+  .van-nav-bar__title {
     color: #fff;
   }
-  .van-nav-bar__text{
+  .van-nav-bar__text {
     color: #fff;
     font-size: 12px;
   }
@@ -29,10 +30,9 @@ ul{
     color: #fff;
   }
 }
-
-.van-tabbar {
-  background-color: #fdfdfd;
+.van-tabbar{
+  background: #fdfdfd;
 }
-.van-tabbar-item__text:active{
- background-color: transparent;
+.van-nav-bar__text:active{
+  background: transparent;
 }
