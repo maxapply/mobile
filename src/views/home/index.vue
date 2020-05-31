@@ -1,18 +1,8 @@
 <template>
   <div class="container">
     <van-tabs v-model="activeChannelIndex">
-      <van-tab title="推荐">
-      <com-article></com-article>
-      </van-tab>
-
-      <van-tab title="标签 2">
-        <com-article></com-article>
-      </van-tab>
-      <van-tab title="标签 3">
-        <com-article></com-article>
-      </van-tab>
-      <van-tab title="标签 4">
-        <com-article></com-article>
+      <van-tab  :title="item.name" v-for="item in list" :key="item.id">
+        <com-article :articleID="item.id"></com-article>
       </van-tab>
     </van-tabs>
 
@@ -21,6 +11,7 @@
 
 <script>
 import comArticle from './components/com-article.vue'
+import { getChannelsList } from '../../api/channel.js'
 export default {
   name: 'home-index',
   components: {
@@ -28,11 +19,18 @@ export default {
   },
   data () {
     return {
-      activeChannelIndex: 0
-
+      activeChannelIndex: 0,
+      list: []
     }
   },
+  created () {
+    this.getList()
+  },
   methods: {
+    async getList () {
+      const res = await getChannelsList()
+      this.list = res.channels
+    }
   }
 
 }

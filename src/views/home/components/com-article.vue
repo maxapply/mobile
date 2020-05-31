@@ -2,48 +2,89 @@
     <div class="scroll-wrapper" >
       <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
         <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" >
-        <van-cell v-for="item in list" :key="item" :title="item" />
+        <van-cell v-for="item in articleList" :key="item.art_id.toString()" :title="item.title" >
+
+          <template slot="label">
+
+            <van-grid  :column-num="item.cover.type" v-if="item.cover.type>0" :gutter="10" :border="false">
+              <van-grid-item v-for="item2 in item.cover.type" :key="item2" icon="photo-o" text="文字" >
+                 <van-image width="85" height="85" :src="item.cover.images[item2-1]" />
+              </van-grid-item>
+            </van-grid>
+
+           <p>
+            <span>作者:{{item.aut_name}}</span>
+            &nbsp;
+            <span>评论:{{item.comm_count}}</span>
+            &nbsp;
+            <span>时间:{{item.pubdate}}</span>
+           </p>
+
+          </template>
+        </van-cell>
         </van-list>
       </van-pull-refresh>
     </div>
 </template>
 
 <script>
+import { apiArticleList } from '../../../api/article.js'
 export default {
   name: 'com-article',
+  // props: ['articleID'],
+  props: {
+    articleID: {
+      type: Number,
+      required: true
+    }
+  },
   data () {
     return {
       list: [],
       loading: false,
       finished: false,
-      isLoading: false
+      isLoading: false,
+      ts: Date.now(),
+      articleList: []
     }
   },
+  created () {
+    this.getArticleList()
+  },
+
   methods: {
-    onLoad () {
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1)
-        }
+    async onLoad () {
+      await this.$sleep(800)
+      const res = await this.getArticleList()
 
-        // 加载状态结束
-        this.loading = false
+      if (res.results.length > 0) {
+        this.articleList.push(...res.results)
+        this.ts = res.pre_timestamp
+      } else {
+        this.finished = true
+      }
 
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true
-        }
-      }, 1000)
+      this.loading = false
     },
     onRefresh () {
       setTimeout(() => {
         this.onLoad()
         this.$toast.success('刷新成功')
         this.isLoading = false
+        this.getArticleList()
       }, 1000)
+    },
+    async getArticleList () {
+      const article = {
+        channel_id: this.articleID,
+        timestamp: this.ts
+      }
+      const res = await apiArticleList(article)
+      return res
+      // this.articleList = res.results
+      // this.ts = res.pre_timestamp
     }
+
   }
 }
 </script>
