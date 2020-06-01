@@ -11,3 +11,13 @@ export function apiArticleList ({ channel_id, timestamp }) {
     }
   })
 }
+
+export function apiDislikes (articleID) {
+  return request({
+    url: '/app/v1_0/article/dislikes',
+    method: 'POST',
+    data: {
+      target: articleID
+    }
+  })
+}

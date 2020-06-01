@@ -33,7 +33,7 @@ instance.interceptors.response.use(function (response) {
     return response.data
   }
 }, function (error) {
-  if (error.response.state === 401) {
+  if (error.response.status === 401) {
     router.push('/login')
     return new Promise(function () {})
   }
