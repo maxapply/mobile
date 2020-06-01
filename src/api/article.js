@@ -21,3 +21,14 @@ export function apiDislikes (articleID) {
     }
   })
 }
+
+export function apiReports ({ target, type }) {
+  return request({
+    url: '/app/v1_0/article/reports',
+    method: 'POST',
+    data: {
+      target,
+      type
+    }
+  })
+}

@@ -1,6 +1,6 @@
 <template>
     <div class="scroll-wrapper" >
-      <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+      <van-pull-refresh success-duration="1500" :success-text="sucText" v-model="isLoading" @refresh="onRefresh">
         <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" >
         <van-cell v-for="item in articleList" :key="item.art_id.toString()" :title="item.title" >
 
@@ -24,7 +24,7 @@
         </van-cell>
         </van-list>
       </van-pull-refresh>
-     <com-more v-model="isOpen"  :noLikeID="disLikeId"></com-more>
+     <com-more v-model="isOpen"  @xiaoshi="handleDislikesSuccess()" :noLikeID="disLikeId"></com-more>
     </div>
 </template>
 
@@ -52,7 +52,8 @@ export default {
       ts: Date.now(),
       articleList: [],
       isOpen: false,
-      disLikeId: ''
+      disLikeId: '',
+      sucText: ''
     }
   },
   created () {
@@ -73,13 +74,17 @@ export default {
 
       this.loading = false
     },
-    onRefresh () {
-      setTimeout(() => {
-        this.onLoad()
-        this.$toast.success('刷新成功')
+    async onRefresh () {
+      await this.$sleep(800)
+      const res = await this.getArticleList()
+      if (res.results.length > 0) {
+        this.articleList.unshift(...res.results)
+        this.ts = res.pre_timestamp
+        this.sucText = '刷新成功！'
         this.isLoading = false
-        this.getArticleList()
-      }, 1000)
+      } else {
+        this.sucText = '已经是最新了！'
+      }
     },
     async getArticleList () {
       const article = {
@@ -88,12 +93,16 @@ export default {
       }
       const res = await apiArticleList(article)
       return res
-      // this.articleList = res.results
-      // this.ts = res.pre_timestamp
     },
     open (id) {
       this.disLikeId = id
       this.isOpen = true
+    },
+    handleDislikesSuccess () {
+      const index = this.articleList.findIndex((item) => {
+        return item.art_id.toString() === this.disLikeId
+      })
+      this.articleList.splice(index, 1)
     }
 
   }
