@@ -8,7 +8,7 @@
         <com-article :articleID="item.id"></com-article>
       </van-tab>
     </van-tabs>
-    <com-popup v-model="isPopup" :proups="list" :popupIndex="activeChannelIndex" ></com-popup>
+    <com-popup v-model="isPopup" :proups="list" :popupIndex.sync="activeChannelIndex" ></com-popup>
   </div>
 </template>
 

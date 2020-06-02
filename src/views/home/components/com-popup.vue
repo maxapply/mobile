@@ -1,6 +1,6 @@
 <template>
  <div class="compopup">
-    <van-popup :value="value"  closeable  close-icon-position="top-left" @click-overlay="$emit('input',$event)" round position="bottom" :style="{ height: '95%' }" >
+    <van-popup :value="value" @closed="isEdit=false"  closeable  close-icon-position="top-left" @click-overlay="$emit('input',$event)" round position="bottom" :style="{ height: '95%' }" >
     <div class="channel">
       <div class="channel-head">
         <div>
@@ -8,14 +8,14 @@
           <span class="desc">点击进入频道</span>
         </div>
         <div>
-          <van-button type="danger" plain size="mini" round>编辑</van-button>
+          <van-button type="danger" plain size="mini" @click="isEdit=!isEdit" round>{{isEdit?'完成':'编辑'}}</van-button>
         </div>
       </div>
       <!--van-grid 没有设置column-num属性，默认是4列-->
       <van-grid class="channel-content" :gutter="10" clickable>
-        <van-grid-item v-for="(item, k) in proups" :key="item.id" text="文字">
-          <span class="text" :style="{color:k===popupIndex?'red':''}">{{item.name}}</span>
-          <!-- <van-icon class="close-icon" name="close" /> -->
+        <van-grid-item v-for="(item, k) in proups"  :key="item.id" text="文字">
+          <span class="text"  :style="{color:k===popupIndex?'red':''}">{{item.name}}</span>
+          <van-icon v-show="k>0&&isEdit" @click="delChannel(item,k)" class="close-icon" name="close" />
         </van-grid-item>
       </van-grid>
     </div>
@@ -28,7 +28,7 @@
         </div>
       </div>
       <van-grid class="channel-content" :gutter="10" clickable>
-        <van-grid-item v-for="item in restChannel" :key="item.id" text="文字">
+        <van-grid-item v-for="item in restChannel" @click="restTouser(item)" :key="item.id" text="文字">
           <div class="info">
             <span class="text" >{{item.name}}</span>
           </div>
@@ -40,14 +40,15 @@
 </template>
 
 <script>
-import { apiChannel } from '../../../api/channel.js'
+import { apiChannel, apiChannelAdd, apiChannelDel } from '../../../api/channel.js'
 export default {
   name: 'compopup',
   props: ['value', 'proups', 'popupIndex'],
   data () {
     return {
       isClose: true,
-      channelAll: []
+      channelAll: [],
+      isEdit: false
     }
   },
   computed: {
@@ -69,6 +70,18 @@ export default {
     async getChannel () {
       const res = await apiChannel()
       this.channelAll = res.channels
+    },
+    async restTouser (item) {
+      this.proups.push(item)
+      await apiChannelAdd(item)
+    },
+    delChannel (obj, k) {
+      this.proups.splice(k, 1)
+      apiChannelDel(obj)
+
+      if (k === this.proups.length && k === this.popupIndex) {
+        this.$emit('update:popupIndex', k - 1)
+      }
     }
   }
 }
