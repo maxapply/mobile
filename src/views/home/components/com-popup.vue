@@ -13,7 +13,7 @@
       </div>
       <!--van-grid 没有设置column-num属性，默认是4列-->
       <van-grid class="channel-content" :gutter="10" clickable>
-        <van-grid-item v-for="(item, k) in proups"  :key="item.id" text="文字">
+        <van-grid-item @click="clkChannel(item,k)" v-for="(item, k) in proups"  :key="item.id" text="文字">
           <span class="text"  :style="{color:k===popupIndex?'red':''}">{{item.name}}</span>
           <van-icon v-show="k>0&&isEdit" @click="delChannel(item,k)" class="close-icon" name="close" />
         </van-grid-item>
@@ -82,6 +82,14 @@ export default {
       if (k === this.proups.length && k === this.popupIndex) {
         this.$emit('update:popupIndex', k - 1)
       }
+    },
+    clkChannel (obj, k) {
+      if (this.isEdit && k > 0) {
+        return this.delChannel(obj, k)
+      }
+
+      this.$emit('update:popupIndex', k)
+      this.$emit('input', false)
     }
   }
 }
